@@ -289,6 +289,19 @@ Scratch.translate.setup({
             },
           },
           {
+            opcode: "TENSOR_TRANSPOSE_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "张量部分转置器[A][B][C]", // 积木显示文本
+            color2: "#f2aaaa",
+            color3: "#f2590d",
+            arguments: {
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "输入张量" }, //  定义C参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.STRING, defaultValue: "维度索引1" }, //  定义C参数，类型为数字，默认值为空
+              C: { type: Scratch.ArgumentType.STRING, defaultValue: "维度索引1" }, //  定义C参数，类型为数字，默认值为空
+
+            },
+          },
+          {
             opcode: "ARRAY_MERGE_SPLIT_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
             text: "多维张量[A] [B][C] [D]", // 积木显示文本
@@ -687,6 +700,22 @@ Scratch.translate.setup({
               },
             }
            },
+           '---',
+           {
+            opcode: "FIND_REPLACE_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[D]查找[A]中的[B]替换为[C]",
+            color1: "#ff4c4c", // 和其他分词器保持一致颜色
+            arguments: {
+                A: { type: Scratch.ArgumentType.STRING, defaultValue: "输入" }, //  定义A参数，类型为数字，默认值为空
+                B: { type: Scratch.ArgumentType.STRING, defaultValue: "" }, //  定义A参数，类型为数字，默认值为空
+                C: { type: Scratch.ArgumentType.STRING, defaultValue: "" }, //  定义A参数，类型为数字，默认值为空
+                D: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "match_moder",
+              },
+            }
+           },
 
           
 
@@ -726,6 +755,10 @@ Scratch.translate.setup({
           modee: {
           acceptReporters: true,
           items: ["加壳", "拆壳"],
+          },
+          match_moder: {
+          acceptReporters: false,
+          items: ["全局", "单个"],
           },
         },
       };
@@ -3741,6 +3774,190 @@ ARRAY_SHELL_block({ A, B, C }) {
         return "[]";
     }
 }
+/**
+ * 张量部分转置器
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 输入张量
+ * @param {*} param.B - 要转置的维度索引1
+ * @param {*} param.C - 要转置的维度索引2
+ * @returns {string} 转置后的张量 (JSON格式)
+ */
+TENSOR_TRANSPOSE_block({ A, B, C }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    // 获取张量维度
+    const getDimensions = (tensor) => {
+        const dims = [];
+        let current = tensor;
+        while (Array.isArray(current)) {
+            dims.push(current.length);
+            current = current[0];
+        }
+        return dims;
+    };
+
+    // 扁平化张量
+    const flatten = (tensor) => {
+        const result = [];
+        const stack = [tensor];
+        while (stack.length) {
+            const current = stack.pop();
+            if (Array.isArray(current)) {
+                for (let i = current.length - 1; i >= 0; i--) {
+                    stack.push(current[i]);
+                }
+            } else {
+                result.push(current);
+            }
+        }
+        return result;
+    };
+
+    // 重塑张量
+    const reshape = (arr, dims) => {
+        if (dims.length === 1) return arr.slice(0, dims[0]);
+        
+        const result = [];
+        const size = dims.slice(1).reduce((a, b) => a * b, 1);
+        
+        for (let i = 0; i < dims[0]; i++) {
+            result.push(reshape(arr.slice(i * size, (i + 1) * size), dims.slice(1)));
+        }
+        return result;
+    };
+
+    // 张量转置函数
+    const transpose = (tensor, dim1, dim2) => {
+        const dims = getDimensions(tensor);
+        
+        // 验证维度索引
+        if (dim1 < 0 || dim1 >= dims.length || dim2 < 0 || dim2 >= dims.length) {
+            return tensor;
+        }
+        
+        if (dim1 === dim2) {
+            return tensor;
+        }
+        
+        // 计算新的维度顺序
+        const newDims = [...dims];
+        newDims[dim1] = dims[dim2];
+        newDims[dim2] = dims[dim1];
+        
+        // 扁平化张量
+        const flatTensor = flatten(tensor);
+        
+        // 计算转置后的索引映射
+        const totalSize = dims.reduce((a, b) => a * b, 1);
+        const result = new Array(totalSize);
+        
+        // 计算每个维度的步长
+        const strides = [];
+        let stride = 1;
+        for (let i = dims.length - 1; i >= 0; i--) {
+            strides[i] = stride;
+            stride *= dims[i];
+        }
+        
+        // 计算新维度的步长
+        const newStrides = [];
+        stride = 1;
+        for (let i = newDims.length - 1; i >= 0; i--) {
+            newStrides[i] = stride;
+            stride *= newDims[i];
+        }
+        
+        // 计算转置后的索引
+        for (let i = 0; i < totalSize; i++) {
+            // 计算原始索引
+            let originalIndex = 0;
+            let temp = i;
+            for (let j = 0; j < dims.length; j++) {
+                originalIndex += (temp % newDims[j]) * strides[j];
+                temp = Math.floor(temp / newDims[j]);
+            }
+            
+            result[i] = flatTensor[originalIndex];
+        }
+        
+        // 重塑为新的维度
+        return reshape(result, newDims);
+    };
+
+    try {
+        const tensor = parseToArray(A);
+        const dim1 = Math.max(0, Math.floor(+B || 0));
+        const dim2 = Math.max(0, Math.floor(+C || 0));
+        
+        if (!Array.isArray(tensor)) {
+            return "[]";
+        }
+        
+        // 执行转置
+        const transposed = transpose(tensor, dim1, dim2);
+        return JSON.stringify(transposed);
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+/**
+ * 文本查找替换器 - 完全文本版本
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 输入文本（可以是数组，会转换为字符串）
+ * @param {*} param.B - 要查找的内容
+ * @param {*} param.C - 替换的内容
+ * @param {*} param.D - 匹配模式 ("全局"/"单个")
+ * @returns {string} 处理后的文本
+ */
+FIND_REPLACE_block({ A, B, C, D }) {
+    try {
+        // 将输入转换为字符串
+        let text;
+        if (typeof A === 'string') {
+            text = A;
+        } else {
+            try {
+                // 如果是数组，直接转换为字符串（保持原样）
+                text = JSON.stringify(A);
+            } catch (e) {
+                // 如果转换失败，尝试其他方式
+                text = String(A);
+            }
+        }
+
+        const findStr = String(B || "");
+        const replaceStr = String(C || "");
+        const matchMode = String(D || "");
+
+        // 根据匹配模式执行替换
+        let result;
+        if (matchMode === "全局") {
+            // 全局替换：使用split和join
+            result = text.split(findStr).join(replaceStr);
+        } else {
+            // 单个替换：使用replace
+            result = text.replace(findStr, replaceStr);
+        }
+
+        return result;
+
+    } catch (error) {
+        // 出错时返回原文本
+        return typeof A === 'string' ? A : JSON.stringify(A);
+    }
+}
+
+
+
+
 
 
 
