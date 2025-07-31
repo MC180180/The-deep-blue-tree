@@ -288,6 +288,37 @@ Scratch.translate.setup({
 
             },
           },
+          {
+            opcode: "ARRAY_MERGE_SPLIT_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "多维张量[A] [B][C] [D]", // 积木显示文本
+            color2: "#f2aaaa",
+            color3: "#f2590d",
+            arguments: {
+              B: { type: Scratch.ArgumentType.STRING, defaultValue: "数组1" }, //  定义C参数，类型为数字，默认值为空
+              C: { type: Scratch.ArgumentType.STRING, defaultValue: "数组2" }, //  定义C参数，类型为数字，默认值为空
+              D: { type: Scratch.ArgumentType.NUMBER, defaultValue: "拆分维度中第几个(可选)" }, //  定义C参数，类型为数字，默认值为空
+              A: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "mode",
+              },
+            },
+          },
+          {
+            opcode: "ARRAY_SHELL_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "[B][A][C]层", // 积木显示文本
+            color2: "#f2aaaa",
+            color3: "#f2590d",
+            arguments: {
+              B: { type: Scratch.ArgumentType.STRING, defaultValue: "数组" }, //  定义C参数，类型为数字，默认值为空
+              C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "1" }, //  定义C参数，类型为数字，默认值为空
+              A: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "modee",
+              },
+            },
+          },
           '---',
           {
             opcode: "RandomVariation_block", // EEEEEEEEEEEE运算积木
@@ -299,9 +330,91 @@ Scratch.translate.setup({
             },
           },
           '---',
-
-
-
+          {
+            opcode: "UPDATE_WEIGHTS_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "用[C]优化器更新权重[A] 梯度[B] 学习率[D] [E]",
+            color1: "#225bb1", 
+            arguments: {
+                A: { type: Scratch.ArgumentType.STRING, defaultValue: "[1,2,3]" },
+                B: { type: Scratch.ArgumentType.STRING, defaultValue: "[0.1,0.2,0.3]" },
+                C: {
+                    type: Scratch.ArgumentType.STRING,
+                    menu: "optimizer_type"
+                },
+                D: { type: Scratch.ArgumentType.NUMBER, defaultValue: "0.01" },
+                E: {
+                    type: Scratch.ArgumentType.STRING,
+                    menu: "adam_params"
+                },
+              }
+            },
+            {
+            opcode: "UPDATE_BIAS_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "更新偏置[A] 梯度[B] 学习率[C]",
+            color1: "#225bb1", 
+            arguments: {
+                A: { type: Scratch.ArgumentType.STRING, defaultValue: "[0,0,0]" },
+                B: { type: Scratch.ArgumentType.STRING, defaultValue: "[0.1,0.2,0.3]" },
+                C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "0.01" }
+            }
+           },
+            '---',
+          {
+            opcode: "WEIGHT_QUANTIZE_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "权重量化[A] [B]bit", // 积木显示文本
+            color1: "#225bb1",
+            arguments: {
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "权重数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "8" }, //  定义A参数，类型为数字，默认值为空
+            },
+          },
+          {
+            opcode: "FLOAT_PRECISION_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "限制浮点位数[A] [B]位数", // 积木显示文本
+            color1: "#225bb1",
+            arguments: {
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "权重数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "4" }, //  定义A参数，类型为数字，默认值为空
+            },
+          },
+          '---',
+          {
+            opcode: "WEIGHT_PRUNING_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "基于权重[A]的剪枝算法[B]", // 积木显示文本
+            color1: "#225bb1",
+            arguments: {
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "权重数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "剪枝阈值 (0-1之间)" }, //  定义A参数，类型为数字，默认值为空
+            },
+          },
+          {
+            opcode: "ACTIVATION_PRUNING_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "基于激活[A]的剪枝[C]算法[B]", // 积木显示文本
+            color1: "#225bb1",
+            arguments: {
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "激活值数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "剪枝阈值 (0-1之间)" }, //  定义A参数，类型为数字，默认值为空
+              C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "剪枝模式 (0=输出剪枝, 1=输入剪枝)" }, //  定义A参数，类型为数字，默认值为空
+            },
+          },
+          {
+            opcode: "STRUCTURED_PRUNING_block", // EEEEEEEEEEEE运算积木
+            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
+            text: "结构化[A][B]的剪枝算法[C][D]", // 积木显示文本
+            color1: "#225bb1",
+            arguments: {
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "权重数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "激活值数组" }, //  定义A参数，类型为数字，默认值为空
+              C: { type: Scratch.ArgumentType.STRING, defaultValue: "权重剪枝阈值 (0-1之间)" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              D: { type: Scratch.ArgumentType.NUMBER, defaultValue: "激活剪枝阈值 (0-1之间)" }, //  定义A参数，类型为数字，默认值为空
+            },
+          },
           '---',
           {
             opcode: "MSE_GRADIENT_block", // EEEEEEEEEEEE运算积木
@@ -595,9 +708,25 @@ Scratch.translate.setup({
             items: ["加法", "乘法"],
           },
           lookup_mode: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: ["键找值", "值找键"],
-        },
+          },
+          optimizer_type: {
+          acceptReporters: false,
+          items: ["SGD", "Adam"]
+          },
+          adam_params: {
+              acceptReporters: true,
+              items: ["无", "β₁=0.9, β₂=0.999"]
+          },
+          mode: {
+          acceptReporters: true,
+          items: ["合并", "拆分"],
+          },
+          modee: {
+          acceptReporters: true,
+          items: ["加壳", "拆壳"],
+          },
         },
       };
     }
@@ -2922,8 +3051,696 @@ DICT_LOOKUP_block({ A, B, C }) {
 }
 
 
+/**
+ * 权重量化 - 支持多维数组和可调bit位
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 输入权重数组
+ * @param {*} param.B - 量化位数 (1-32)
+ * @returns {string} 量化后的权重数组 (JSON格式)
+ */
+WEIGHT_QUANTIZE_block({ A, B }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    // 递归量化函数
+    const quantizeRecursive = (arr, bits) => {
+        if (!Array.isArray(arr)) {
+            // 如果是数字，进行量化
+            const maxVal = Math.pow(2, bits - 1) - 1;
+            const minVal = -Math.pow(2, bits - 1);
+            const scale = Math.pow(2, bits - 1);
+            
+            // 量化到指定位数
+            const quantized = Math.round(arr * scale) / scale;
+            
+            // 确保在范围内
+            return Math.max(minVal, Math.min(maxVal, quantized));
+        }
+        
+        // 如果是数组，递归处理每个元素
+        return arr.map(item => quantizeRecursive(item, bits));
+    };
+
+    try {
+        const weights = parseToArray(A);
+        const bits = Math.max(1, Math.min(32, Math.floor(+B || 8))); // 限制在1-32位
+        
+        if (!Array.isArray(weights)) {
+            return "[]";
+        }
+        
+        // 执行量化
+        const quantizedWeights = quantizeRecursive(weights, bits);
+        
+        return JSON.stringify(quantizedWeights);
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+/**
+ * 限制浮点位数 - 基础版
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 输入数组
+ * @param {*} param.B - 保留的小数位数
+ * @returns {string} 处理后的数组 (JSON格式)
+ */
+FLOAT_PRECISION_block({ A, B }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    // 递归处理函数
+    const limitPrecision = (arr, precision) => {
+        if (!Array.isArray(arr)) {
+            // 如果是数字，限制小数位数
+            const factor = Math.pow(10, precision);
+            return Math.round(arr * factor) / factor;
+        }
+        
+        // 如果是数组，递归处理每个元素
+        return arr.map(item => limitPrecision(item, precision));
+    };
+
+    try {
+        const array = parseToArray(A);
+        const precision = Math.max(0, Math.floor(+B || 2)); // 默认保留2位小数
+        
+        if (!Array.isArray(array)) {
+            return "[]";
+        }
+        
+        // 执行精度限制
+        const result = limitPrecision(array, precision);
+        
+        return JSON.stringify(result);
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+/**
+ * 基于权重的剪枝算法
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 权重数组
+ * @param {*} param.B - 剪枝阈值 (0-1之间)
+ * @returns {string} 剪枝后的权重数组 (JSON格式)
+ */
+WEIGHT_PRUNING_block({ A, B }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    // 递归剪枝函数
+    const pruneWeights = (arr, threshold) => {
+        if (!Array.isArray(arr)) {
+            // 如果是权重，根据绝对值大小决定是否剪枝
+            return Math.abs(arr) >= threshold ? arr : 0;
+        }
+        
+        // 如果是数组，递归处理每个元素
+        return arr.map(item => pruneWeights(item, threshold));
+    };
+
+    try {
+        const weights = parseToArray(A);
+        const threshold = Math.max(0, Math.min(1, Math.abs(+B || 0.5))); // 限制在0-1之间
+        
+        if (!Array.isArray(weights)) {
+            return "[]";
+        }
+        
+        // 执行剪枝
+        const prunedWeights = pruneWeights(weights, threshold);
+        
+        return JSON.stringify(prunedWeights);
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+
+/**
+ * 基于激活的剪枝算法
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 激活值数组
+ * @param {*} param.B - 剪枝阈值 (0-1之间)
+ * @param {*} param.C - 剪枝模式 (0=输出剪枝, 1=输入剪枝)
+ * @returns {string} 剪枝信息 (JSON格式)
+ */
+ACTIVATION_PRUNING_block({ A, B, C }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    try {
+        const activations = parseToArray(A);
+        const threshold = Math.max(0, Math.min(1, Math.abs(+B || 0.1))); // 限制在0-1之间
+        const mode = +C || 0; // 0=输出剪枝, 1=输入剪枝
+        
+        if (!Array.isArray(activations)) {
+            return "[]";
+        }
+        
+        // 计算每个神经元的平均激活值
+        const neuronActivations = [];
+        for (let i = 0; i < activations.length; i++) {
+            const neuron = activations[i];
+            if (Array.isArray(neuron)) {
+                // 计算该神经元在所有样本上的平均激活值
+                const avgActivation = neuron.reduce((sum, val) => sum + Math.abs(val), 0) / neuron.length;
+                neuronActivations.push(avgActivation);
+            } else {
+                neuronActivations.push(Math.abs(neuron));
+            }
+        }
+        
+        // 确定要剪枝的神经元索引
+        const prunedIndices = [];
+        neuronActivations.forEach((avgAct, index) => {
+            if (avgAct < threshold) {
+                prunedIndices.push(index);
+            }
+        });
+        
+        // 返回剪枝信息
+        return JSON.stringify({
+            prunedIndices: prunedIndices,
+            prunedCount: prunedIndices.length,
+            totalNeurons: neuronActivations.length,
+            pruningRatio: (prunedIndices.length / neuronActivations.length).toFixed(4),
+            mode: mode === 0 ? "output" : "input"
+        });
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+
+/**
+ * 结构化剪枝算法 - 综合权重和激活信息
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 权重数组
+ * @param {*} param.B - 激活值数组
+ * @param {*} param.C - 权重剪枝阈值 (0-1之间)
+ * @param {*} param.D - 激活剪枝阈值 (0-1之间)
+ * @returns {string} 剪枝结果 (JSON格式)
+ */
+STRUCTURED_PRUNING_block({ A, B, C, D }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    try {
+        const weights = parseToArray(A);
+        const activations = parseToArray(B);
+        const weightThreshold = Math.max(0, Math.min(1, Math.abs(+C || 0.5)));
+        const activationThreshold = Math.max(0, Math.min(1, Math.abs(+D || 0.1)));
+        
+        if (!Array.isArray(weights) || !Array.isArray(activations)) {
+            return "[]";
+        }
+        
+        // 计算每个神经元的重要性分数
+        const neuronImportance = [];
+        for (let i = 0; i < weights.length; i++) {
+            const weightNeuron = weights[i];
+            const activationNeuron = activations[i];
+            
+            let weightScore = 0;
+            let activationScore = 0;
+            
+            // 计算权重分数（L1范数）
+            if (Array.isArray(weightNeuron)) {
+                weightScore = weightNeuron.reduce((sum, w) => sum + Math.abs(w), 0) / weightNeuron.length;
+            } else {
+                weightScore = Math.abs(weightNeuron);
+            }
+            
+            // 计算激活分数
+            if (Array.isArray(activationNeuron)) {
+                activationScore = activationNeuron.reduce((sum, a) => sum + Math.abs(a), 0) / activationNeuron.length;
+            } else {
+                activationScore = Math.abs(activationNeuron);
+            }
+            
+            // 综合分数（可以调整权重）
+            neuronImportance.push({
+                index: i,
+                score: weightScore * 0.5 + activationScore * 0.5,
+                weightScore: weightScore,
+                activationScore: activationScore
+            });
+        }
+        
+        // 确定要剪枝的神经元
+        const prunedNeurons = neuronImportance.filter(neuron => 
+            neuron.weightScore < weightThreshold || neuron.activationScore < activationThreshold
+        );
+        
+        // 执行剪枝
+        const prunedWeights = weights.map((neuron, index) => {
+            const shouldPrune = prunedNeurons.some(pn => pn.index === index);
+            if (shouldPrune) {
+                return Array.isArray(neuron) ? neuron.map(() => 0) : 0;
+            }
+            return neuron;
+        });
+        
+        // 返回剪枝结果
+        return JSON.stringify({
+            prunedWeights: prunedWeights,
+            prunedNeurons: prunedNeurons,
+            prunedCount: prunedNeurons.length,
+            totalNeurons: neuronImportance.length,
+            pruningRatio: (prunedNeurons.length / neuronImportance.length).toFixed(4),
+            weightThreshold: weightThreshold,
+            activationThreshold: activationThreshold
+        });
+        
+    } catch (error) {
+        return "[]";
+    }
+}
 
 
+
+/**
+ * 根据梯度和优化器类型更新权重
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 当前权重张量（JSON字符串或数组）
+ * @param {*} param.B - 对应梯度张量（来自 MSE/CE/Huber）
+ * @param {*} param.C - 优化器类型 ("SGD" 或 "Adam")
+ * @param {*} param.D - 学习率，默认 0.01
+ * @param {*} param.E - 可选参数（Adam用 β₁, β₂；SGD用动量）
+ * @returns {string} 更新后的权重张量（JSON格式）
+ */
+UPDATE_WEIGHTS_block({ A, B, C, D, E }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    const flatten = (arr) => {
+        const result = [];
+        const stack = [arr];
+        while (stack.length) {
+            const current = stack.pop();
+            if (Array.isArray(current)) {
+                for (let i = current.length - 1; i >= 0; i--) {
+                    stack.push(current[i]);
+                }
+            } else {
+                result.push(current);
+            }
+        }
+        return result;
+    };
+
+    const reshape = (arr, dims) => {
+        if (dims.length === 1) return arr.slice(0, dims[0]);
+        
+        const result = [];
+        const size = dims.slice(1).reduce((a, b) => a * b, 1);
+        
+        for (let i = 0; i < dims[0]; i++) {
+            result.push(reshape(arr.slice(i * size, (i + 1) * size), dims.slice(1)));
+        }
+        return result;
+    };
+
+    try {
+        // 解析输入
+        const weights = parseToArray(A);
+        const gradients = parseToArray(B);
+        const optimizer = String(C || "SGD").toUpperCase();
+        const lr = parseFloat(D) || 0.01;
+
+        // 获取维度信息
+        const getDims = (arr) => {
+            const dims = [];
+            let current = arr;
+            while (Array.isArray(current)) {
+                dims.push(current.length);
+                current = current[0];
+            }
+            return dims;
+        };
+
+        const dimsWeights = getDims(weights);
+        const dimsGradients = getDims(gradients);
+
+        // 维度检查
+        if (dimsWeights.length !== dimsGradients.length ||
+            dimsWeights.some((d, i) => d !== dimsGradients[i])) {
+            return "[]"; // 不匹配则返回空数组
+        }
+
+        // 扁平化处理
+        const flatWeights = flatten(weights);
+        const flatGradients = flatten(gradients);
+        const n = flatWeights.length;
+
+        // 初始化状态变量（仅在Adam中需要）
+        let momentum = 0;
+        let m = 0, v = 0;
+        let beta1 = 0.9, beta2 = 0.999;
+
+        if (optimizer === "ADAM") {
+            beta1 = Math.max(0.01, parseFloat(E?.beta1) || beta1);
+            beta2 = Math.max(0.01, parseFloat(E?.beta2) || beta2);
+        } else if (optimizer === "SGD") {
+            momentum = parseFloat(E?.momentum) || 0;
+        }
+
+        // 更新权重
+        const updatedWeights = new Array(n);
+        for (let i = 0; i < n; i++) {
+            const grad = flatGradients[i];
+
+            if (optimizer === "SGD") {
+                // SGD: w_new = w - lr * grad
+                updatedWeights[i] = flatWeights[i] - lr * grad;
+            } else if (optimizer === "ADAM") {
+                // Adam: m_t = β1 * m_{t-1} + (1−β1) * grad
+                m = beta1 * m + (1 - beta1) * grad;
+                // v_t = β2 * v_{t-1} + (1−β2) * grad²
+                v = beta2 * v + (1 - beta2) * grad * grad;
+                // bias-corrected estimates
+                const m_hat = m / (1 - Math.pow(beta1, 1));
+                const v_hat = v / (1 - Math.pow(beta2, 1));
+                // w_new = w - lr * m_hat / (√v_hat + ε)
+                updatedWeights[i] = flatWeights[i] - lr * m_hat / (Math.sqrt(v_hat) + 1e-8);
+            } else {
+                // 默认使用SGD
+                updatedWeights[i] = flatWeights[i] - lr * grad;
+            }
+        }
+
+        // 重塑回原始形状
+        return JSON.stringify(reshape(updatedWeights, dimsWeights));
+
+    } catch (error) {
+        console.error("UPDATE_WEIGHTS_block error:", error.message);
+        return "[]";
+    }
+}//LoveAsuka制作
+/**
+ * 根据偏置梯度更新偏置项（SGD优化）
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 当前偏置张量（JSON字符串或数组）
+ * @param {*} param.B - 偏置梯度（来自 BIAS_GRADIENT_block）
+ * @param {*} param.C - 学习率，默认 0.01
+ * @returns {string} 更新后的偏置张量（JSON格式）
+ */
+UPDATE_BIAS_block({ A, B, C }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    const flatten = (arr) => {
+        const result = [];
+        const stack = [arr];
+        while (stack.length) {
+            const current = stack.pop();
+            if (Array.isArray(current)) {
+                for (let i = current.length - 1; i >= 0; i--) {
+                    stack.push(current[i]);
+                }
+            } else {
+                result.push(current);
+            }
+        }
+        return result;
+    };
+
+    const reshape = (arr, dims) => {
+        if (dims.length === 1) return arr.slice(0, dims[0]);
+        
+        const result = [];
+        const size = dims.slice(1).reduce((a, b) => a * b, 1);
+        
+        for (let i = 0; i < dims[0]; i++) {
+            result.push(reshape(arr.slice(i * size, (i + 1) * size), dims.slice(1)));
+        }
+        return result;
+    };
+
+    try {
+        // 解析输入
+        const bias = parseToArray(A);
+        const grad = parseToArray(B);
+        const lr = parseFloat(C) || 0.01;
+
+        // 获取维度信息
+        const getDims = (arr) => {
+            const dims = [];
+            let current = arr;
+            while (Array.isArray(current)) {
+                dims.push(current.length);
+                current = current[0];
+            }
+            return dims;
+        };
+
+        const dimsBias = getDims(bias);
+        const dimsGrad = getDims(grad);
+
+        // 维度检查：必须完全一致
+        if (dimsBias.length !== dimsGrad.length ||
+            dimsBias.some((d, i) => d !== dimsGrad[i])) {
+            return "[]"; // 不匹配则返回空数组
+        }
+
+        // 扁平化处理
+        const flatBias = flatten(bias);
+        const flatGrad = flatten(grad);
+        const n = flatBias.length;
+
+        // SGD 更新：b_new = b_old - lr * grad_b
+        const updatedBias = new Array(n);
+        for (let i = 0; i < n; i++) {
+            updatedBias[i] = flatBias[i] - lr * flatGrad[i];
+        }
+
+        // 重塑回原始形状
+        return JSON.stringify(reshape(updatedBias, dimsBias));
+
+    } catch (error) {
+        console.error("UPDATE_BIAS_block error:", error.message);
+        return "[]";
+    }
+}//LoveAsuka制作
+
+/**
+ * 数组合并和拆分器
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 功能选择 ("合并"/"拆分")
+ * @param {*} param.B - 任意维度数组1
+ * @param {*} param.C - 任意维度数组2 (合并时使用)
+ * @param {*} param.D - 拆分维度中第几个 (拆分时使用)
+ * @returns {string} 处理结果 (JSON格式)
+ */
+ARRAY_MERGE_SPLIT_block({ A, B, C, D }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    // 获取数组维度
+    const getDimensions = (arr) => {
+        const dims = [];
+        let current = arr;
+        while (Array.isArray(current)) {
+            dims.push(current.length);
+            current = current[0];
+        }
+        return dims;
+    };
+
+    // 合并两个数组
+    const mergeArrays = (arr1, arr2) => {
+        const dims1 = getDimensions(arr1);
+        const dims2 = getDimensions(arr2);
+        
+        // 检查维度是否匹配（除了第一维）
+        if (dims1.length !== dims2.length || 
+            dims1.slice(1).some((d, i) => d !== dims2[i + 1])) {
+            return arr1; // 如果不匹配，返回原数组
+        }
+        
+        // 合并数组
+        return [...arr1, ...arr2];
+    };
+
+    // 拆分数组
+    const splitArray = (arr, splitIndex) => {
+        if (!Array.isArray(arr)) return arr;
+        
+        const dims = getDimensions(arr);
+        if (dims.length === 0) return arr;
+        
+        // 检查拆分索引是否有效
+        if (splitIndex < 0 || splitIndex >= dims[0]) {
+            return arr;
+        }
+        
+        // 执行拆分
+        return arr[splitIndex];
+    };
+
+    try {
+        const mode = String(A || "").toLowerCase();
+        const array1 = parseToArray(B);
+        const array2 = C ? parseToArray(C) : null;
+        const splitIndex = Math.max(0, Math.floor(+D || 0));
+
+        switch (mode) {
+            case "合并":
+                if (!array2) {
+                    return "[]";
+                }
+                const merged = mergeArrays(array1, array2);
+                return JSON.stringify(merged);
+                
+            case "拆分":
+                const split = splitArray(array1, splitIndex);
+                return JSON.stringify(split);
+                
+            default:
+                return "[]";
+        }
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+/**
+ * 数组加壳和拆壳器 - 支持多层拆壳
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 功能选择 ("加壳"/"拆壳")
+ * @param {*} param.B - 输入数组
+ * @param {*} param.C - 加壳层数/拆壳层数
+ * @returns {string} 处理结果 (JSON格式)
+ */
+ARRAY_SHELL_block({ A, B, C }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    // 数组加壳函数
+    const addShell = (arr, layers) => {
+        let result = arr;
+        for (let i = 0; i < layers; i++) {
+            result = [result];
+        }
+        return result;
+    };
+
+    // 数组拆壳函数 - 支持多层拆壳
+    const removeShell = (arr, layers) => {
+        let result = arr;
+        
+        for (let i = 0; i < layers; i++) {
+            // 检查是否可以拆壳
+            if (!Array.isArray(result)) {
+                return result;
+            }
+            
+            // 检查是否所有元素都是数组
+            const allArrays = result.every(item => Array.isArray(item));
+            if (!allArrays) {
+                return result;
+            }
+            
+            // 检查是否所有子数组长度相同
+            const firstLength = result[0].length;
+            const sameLength = result.every(item => item.length === firstLength);
+            if (!sameLength) {
+                return result;
+            }
+            
+            // 执行拆壳
+            const temp = [];
+            for (const item of result) {
+                if (Array.isArray(item)) {
+                    temp.push(...item);
+                } else {
+                    temp.push(item);
+                }
+            }
+            result = temp;
+        }
+        
+        return result;
+    };
+
+    try {
+        const mode = String(A || "").toLowerCase();
+        const array = parseToArray(B);
+        const layers = Math.max(0, Math.floor(+C || 1));
+
+        switch (mode) {
+            case "加壳":
+                const shelled = addShell(array, layers);
+                return JSON.stringify(shelled);
+                
+            case "拆壳":
+                const unshelled = removeShell(array, layers);
+                return JSON.stringify(unshelled);
+                
+            default:
+                return "[]";
+        }
+        
+    } catch (error) {
+        return "[]";
+    }
+}
 
 
 
