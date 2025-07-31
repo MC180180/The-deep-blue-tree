@@ -1,7 +1,7 @@
 // 扩展名称: 深蓝之树 (人工智能)
 // 扩展ID: E_SLZS
 // 描述: 提供大量运算符积木块，从指数运算到三角函数
-// 作者: ELLRA - 蓝电 - MC180180 - BEJ180180  |  auska
+// 作者: ELLRA - 蓝电 - MC180180 - BEJ180180  |  LoveAuska
 // 许可证: MIT
 
 /* 自动生成的国际化代码 */
@@ -22,7 +22,9 @@ Scratch.translate.setup({
 
 //npm install @tensorflow/tfjs @tensorflow/tfjs-node-gpu
 
-
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error('Extension Name must run unsandboxed');
+  }
 
 ((Scratch) => {
   "use strict"; // 启用严格模式
@@ -183,6 +185,8 @@ Scratch.translate.setup({
         id: "SLZS", // 扩展唯一标识符
         name: Scratch.translate("深蓝之树"), // 扩展显示名称
 
+        docsURI: 'https:mc180180.github.io', // 扩展文档链接
+
         color1: "#427bd1", // 扩展主色调
         
 
@@ -222,7 +226,7 @@ Scratch.translate.setup({
             },
           },
 
-
+'---',
             {
             opcode: "awbw_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -236,6 +240,7 @@ Scratch.translate.setup({
               C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "输出向量长度" }, //  定义C参数，类型为数字，默认值为空
             },
           },
+          '---',
           {
             opcode: "MATRIX_ADD_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -254,6 +259,7 @@ Scratch.translate.setup({
               B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "旋转角度 (90的倍数)" }, //  定义A参数，类型为数字，默认值为空
             },
           },
+          '---',
           {
             opcode: "MATRIX_ND_CREATE_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -282,70 +288,53 @@ Scratch.translate.setup({
 
             },
           },
+          '---',
           {
             opcode: "RandomVariation_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
             text: "随机变异[A] 变异强度[B] 变异概率[C]", // 积木显示文本
             arguments: {
-              B: { type: Scratch.ArgumentType.STRING, defaultValue: "维度信息数组 [行,列,...]" }, //  定义A参数，类型为数字，默认值为空
-              C: { type: Scratch.ArgumentType.STRING, defaultValue: "填充值 (可选)" }, //  定义A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "1.6" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "0.2" }, //  定义A参数，类型为数字，默认值为空
             },
           },
+          '---',
+
+
+
+          '---',
           {
-            opcode: "BACKPROP_block", // EEEEEEEEEEEE运算积木
+            opcode: "MSE_GRADIENT_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "基本反向传播(梯度)[A][B][C]", // 积木显示文本
-            color1: "#225bb1", // 扩展主色调
-            arguments: {
-              A: { type: Scratch.ArgumentType.STRING, defaultValue: "上一层误差" }, //  定义C参数，类型为数字，默认值为空
-              B: { type: Scratch.ArgumentType.STRING, defaultValue: "当前层权重矩阵" }, //  定义C参数，类型为数字，默认值为空
-              C: { type: Scratch.ArgumentType.STRING, defaultValue: "当前层激活值" }, //  定义C参数，类型为数字，默认值为空
-            },
-          },
-          {
-            opcode: "BACKPROP_WITH_ACTIVATION_block", // EEEEEEEEEEEE运算积木
-            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "带激活函数的反向传播(梯度)[A][B][C][D]", // 积木显示文本
-            color1: "#225bb1", // 扩展主色调
-            arguments: {
-              A: { type: Scratch.ArgumentType.STRING, defaultValue: "上一层误差" }, //  定义C参数，类型为数字，默认值为空
-              B: { type: Scratch.ArgumentType.STRING, defaultValue: "当前层权重矩阵" }, //  定义C参数，类型为数字，默认值为空
-              C: { type: Scratch.ArgumentType.STRING, defaultValue: "当前层激活值" }, //  定义C参数，类型为数字，默认值为空
-              D: { type: Scratch.ArgumentType.NUMBER, defaultValue: "激活函数类型 (0=ReLU, 1=Sigmoid, 2=Tanh)" }, //  定义C参数，类型为数字，默认值为空
-            },
-          },
-          {
-            opcode: "WEIGHT_UPDATE_block", // EEEEEEEEEEEE运算积木
-            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "权重更新[A][B][C][D]", // 积木显示文本
+            text: "MSE损失梯度[A][B]", // 积木显示文本
             color1: "#727be1", // 扩展主色调
             arguments: {
-              A: { type: Scratch.ArgumentType.STRING, defaultValue: "当前权重矩阵" }, //  定义C参数，类型为数字，默认值为空
-              B: { type: Scratch.ArgumentType.STRING, defaultValue: "权重梯度" }, //  定义C参数，类型为数字，默认值为空
-              C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "学习率" }, //  定义C参数，类型为数字，默认值为空
-              D: { type: Scratch.ArgumentType.STRING, defaultValue: "输入层激活值" }, //  定义C参数，类型为数字，默认值为空
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "预测值数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.STRING, defaultValue: "真实值数组" }, //  定义A参数，类型为数字，默认值为空
             },
           },
           {
-            opcode: "BIAS_UPDATE_block", // EEEEEEEEEEEE运算积木
+            opcode: "CROSS_ENTROPY_GRADIENT_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "偏置更新[A][B][C]", // 积木显示文本
+            text: "交叉熵损失梯度[A][B]", // 积木显示文本
             color1: "#727be1", // 扩展主色调
             arguments: {
-              A: { type: Scratch.ArgumentType.STRING, defaultValue: "当前偏置向量" }, //  定义C参数，类型为数字，默认值为空
-              B: { type: Scratch.ArgumentType.STRING, defaultValue: "偏置梯度" }, //  定义C参数，类型为数字，默认值为空
-              C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "学习率" }, //  定义C参数，类型为数字，默认值为空
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "预测值数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.STRING, defaultValue: "真实值数组" }, //  定义A参数，类型为数字，默认值为空
             },
           },
           {
-            opcode: "BIAS_GRADIENT_block", // king运算积木
+            opcode: "HUBER_GRADIENT_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "偏置梯度[A]", // 积木显示文本
+            text: "Huber损失梯度[A][B] delta参数[C]", // 积木显示文本
             color1: "#727be1", // 扩展主色调
             arguments: {
-              A: { type: Scratch.ArgumentType.STRING, defaultValue: "文本数组" }, //  定义A参数，类型为数字，默认值为空
+              A: { type: Scratch.ArgumentType.STRING, defaultValue: "预测值数组" }, //  定义C参数，类型为数字，默认值为空A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.STRING, defaultValue: "真实值数组" }, //  定义A参数，类型为数字，默认值为空
+              C: { type: Scratch.ArgumentType.NUMBER, defaultValue: "1.0" }, //  定义A参数，类型为数字，默认值为空
             },
           },
+          '---',
           {
             opcode: "ONE_HOT_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -397,6 +386,7 @@ Scratch.translate.setup({
               B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "返回模式 (0=索引, 1=概率)" }, //  定义C参数，类型为数字，默认值为空
             },
           },
+          '---',
           {
             opcode: "RELU_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -421,6 +411,7 @@ Scratch.translate.setup({
             text: "Sigmoid激活[A]", // 积木显示文本
             color1: "#82abff", // 扩展主色调
           },
+          '---',
           {
             opcode: "MSE_LOSS_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -439,6 +430,7 @@ Scratch.translate.setup({
             text: "Huber损失  预[A]真[B]", // 积木显示文本
             color1: "#ffa3ff", // 扩展主色调
           },
+          '---',
           {
             opcode: "DROPOUT_TRAIN_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -472,6 +464,7 @@ Scratch.translate.setup({
               B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "0.1" }, //  定义A参数，类型为数字，默认值为空
             },
           },
+          '---',
             {
             opcode: "DOT_PRODUCT_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -522,6 +515,7 @@ Scratch.translate.setup({
               B: { type: Scratch.ArgumentType.STRING, defaultValue: "向量2" }, //  定义A参数，类型为数字，默认值为空
             },
           },
+          '---',
           {
             opcode: "NORMALIZE_VECTOR_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
@@ -532,6 +526,7 @@ Scratch.translate.setup({
               B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "范数类型 (0=L2范数, 1=L1范数, 2=无穷范数)" }, //  定义A参数，类型为数字，默认值为空
             },
           },
+          '---',
           {
             opcode: "CHARACTER_TOKENIZER_block",
             blockType: Scratch.BlockType.REPORTER,
@@ -544,6 +539,7 @@ Scratch.translate.setup({
                 }
             }
            },
+           '---',
            
           {
             opcode: "ARRAY_TO_DICT_block",
@@ -596,7 +592,7 @@ Scratch.translate.setup({
           },
           operation: {
             acceptReporters: true,
-            items: ["加法", "乘法", "旋转"],
+            items: ["加法", "乘法"],
           },
           lookup_mode: {
             acceptReporters: true,
@@ -788,76 +784,132 @@ awbws_block({ A, B, C }) {
     }
 }
 /**
- * 随机变异极速版本 - 内联所有操作
+ * 随机变异极速版本 - 支持多维数组
  */
 RandomVariation_block({ A, B, C }) {
-    const w = Array.isArray(A) ? A : JSON.parse(A);
-    const s = +B;
-    const p = +C;
-    const r = [];
-    
-    for (let i = 0, len = w.length; i < len; i++) {
-        r[i] = Math.random() < p ? w[i] + (Math.random() * 2 - 1) * s : w[i];
+    const parse = (input) => {
+        if (typeof input === 'string') {
+            try {
+                return JSON.parse(input);
+            } catch (e) {
+                return input.trim().split(/\s+/).map(num => +num || 0);
+            }
+        }
+        return input;
+    };
+
+    // 递归随机变异函数
+    const randomVariation = (array, strength, probability) => {
+        if (!Array.isArray(array)) {
+            // 如果是数字，应用随机变异
+            return Math.random() < probability ? 
+                array + (Math.random() * 2 - 1) * strength : 
+                array;
+        }
+
+        // 如果是数组，递归处理每个元素
+        return array.map(item => randomVariation(item, strength, probability));
+    };
+
+    try {
+        const array = parse(A);
+        const strength = +B || 1;    // 变异强度，默认为1
+        const probability = +C || 0.1; // 变异概率，默认为0.1
+        
+        if (!array) {
+            return "[]";
+        }
+        
+        // 应用随机变异
+        const result = randomVariation(array, strength, probability);
+        
+        return JSON.stringify(result);
+        
+    } catch (error) {
+        return "[]";
     }
-    
-    return JSON.stringify(r);
 }
+
 /**
- * 超极速版本 - 内联所有操作 RELU
+ * 超极速版本 - 支持多维数组的RELU
  */
 RELU_block({ A }) {
     const a = Array.isArray(A) ? A : JSON.parse(A);
-    const r = [];
     
-    for (let i = 0, len = a.length; i < len; i++) {
-        r[i] = a[i] > 0 ? a[i] : 0;
-    }
+    // 递归处理多维数组
+    const relu = (arr) => {
+        if (!Array.isArray(arr)) {
+            // 如果是数字，应用ReLU
+            return arr > 0 ? arr : 0;
+        }
+        
+        // 如果是数组，递归处理每个元素
+        return arr.map(item => relu(item));
+    };
     
-    return JSON.stringify(r);
+    return JSON.stringify(relu(a));
 }
+
 /**
- * ELU激活函数 - 单参数极速版 (α=1.0)
+ * ELU激活函数 - 支持多维数组 (α=1.0)
  */
 ELU_block({ A }) {
     const a = Array.isArray(A) ? A : JSON.parse(A);
-    const r = [];
     
-    for (let i = 0, len = a.length; i < len; i++) {
-        const x = a[i];
-        r[i] = x > 0 ? x : Math.exp(x) - 1;
-    }
+    // 递归处理多维数组
+    const elu = (arr) => {
+        if (!Array.isArray(arr)) {
+            // 如果是数字，应用ELU
+            return arr > 0 ? arr : Math.exp(arr) - 1;
+        }
+        
+        // 如果是数组，递归处理每个元素
+        return arr.map(item => elu(item));
+    };
     
-    return JSON.stringify(r);
+    return JSON.stringify(elu(a));
 }
 
 /**
- * Swish激活函数 - 单参数极速版 (β=1.0)
+ * Swish激活函数 - 支持多维数组 (β=1.0)
  */
 SWISH_block({ A }) {
     const a = Array.isArray(A) ? A : JSON.parse(A);
-    const r = [];
     
-    for (let i = 0, len = a.length; i < len; i++) {
-        const x = a[i];
-        r[i] = x / (1 + Math.exp(-x));
-    }
+    // 递归处理多维数组
+    const swish = (arr) => {
+        if (!Array.isArray(arr)) {
+            // 如果是数字，应用Swish
+            return arr / (1 + Math.exp(-arr));
+        }
+        
+        // 如果是数组，递归处理每个元素
+        return arr.map(item => swish(item));
+    };
     
-    return JSON.stringify(r);
+    return JSON.stringify(swish(a));
 }
 
 /**
- * Sigmoid激活函数 - 单参数极速版
+ * Sigmoid激活函数 - 支持多维数组
  */
 SIGMOID_block({ A }) {
     const a = Array.isArray(A) ? A : JSON.parse(A);
-    const r = [];
     
-    for (let i = 0, len = a.length; i < len; i++) {
-        r[i] = 1 / (1 + Math.exp(-a[i]));
-    }
+    // 递归处理多维数组
+    const sigmoid = (arr) => {
+        if (!Array.isArray(arr)) {
+            // 如果是数字，应用Sigmoid
+            return 1 / (1 + Math.exp(-arr));
+        }
+        
+        // 如果是数组，递归处理每个元素
+        return arr.map(item => sigmoid(item));
+    };
     
-    return JSON.stringify(r);
+    return JSON.stringify(sigmoid(a));
 }
+
 /**
  * 多线程矩阵乘法运算
  */
@@ -1106,91 +1158,146 @@ awbwCPU_block({ A, B }) {
     }
 }
 /**
- * 均方误差损失函数
+ * 均方误差损失函数 - 支持多维数组
  * @param {Object} param - 参数对象
  * @param {*} param.A - 预测值数组
  * @param {*} param.B - 真实值数组
  * @returns {string} 损失值
  */
 MSE_LOSS_block({ A, B }) {
-    const parseToArray = (input) => {
+    const parse = (input) => {
         if (typeof input === 'string') {
             try {
-                return JSON.parse(input).map(num => +num || 0);
+                return JSON.parse(input);
             } catch (e) {
                 return input.trim().split(/\s+/).map(num => +num || 0);
             }
         }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
+        return input;
+    };
+
+    // 递归计算MSE
+    const computeMSE = (pred, actual) => {
+        if (!Array.isArray(pred) && !Array.isArray(actual)) {
+            // 如果都是标量，直接计算平方误差
+            const diff = pred - actual;
+            return diff * diff;
+        }
+
+        if (Array.isArray(pred) && Array.isArray(actual)) {
+            // 如果都是数组，递归计算每个元素
+            if (pred.length !== actual.length) {
+                return 0;
+            }
+            
+            const errors = pred.map((p, i) => computeMSE(p, actual[i]));
+            
+            // 如果子元素是数字，计算平均值
+            if (errors.every(e => typeof e === 'number')) {
+                return errors.reduce((sum, e) => sum + e, 0) / errors.length;
+            }
+            
+            // 如果子元素是数组，保持结构
+            return errors;
+        }
+
+        return 0;
     };
 
     try {
-        const predicted = parseToArray(A);
-        const actual = parseToArray(B);
+        const predicted = parse(A);
+        const actual = parse(B);
         
-        if (predicted.length === 0 || actual.length === 0 || predicted.length !== actual.length) {
+        if (!predicted || !actual) {
             return "0";
         }
         
-        let sum = 0;
-        const len = predicted.length;
+        const mse = computeMSE(predicted, actual);
         
-        for (let i = 0; i < len; i++) {
-            const diff = predicted[i] - actual[i];
-            sum += diff * diff;
-        }
+        // 确保返回数字
+        const result = typeof mse === 'number' ? mse : 
+            (Array.isArray(mse) ? mse.flat(Infinity).reduce((sum, val) => sum + val, 0) / mse.flat(Infinity).length : 0);
         
-        return (sum / len).toString();
+        return result.toString();
         
     } catch (error) {
         return "0";
     }
 }
+
 /**
- * 二元交叉熵损失函数
+ * 二元交叉熵损失函数 - 支持多维数组
  * @param {Object} param - 参数对象
  * @param {*} param.A - 预测概率数组 (0-1之间)
  * @param {*} param.B - 真实标签数组 (0或1)
  * @returns {string} 损失值
  */
 BINARY_CROSS_ENTROPY_LOSS_block({ A, B }) {
-    const parseToArray = (input) => {
+    const parse = (input) => {
         if (typeof input === 'string') {
             try {
-                return JSON.parse(input).map(num => +num || 0);
+                return JSON.parse(input);
             } catch (e) {
                 return input.trim().split(/\s+/).map(num => +num || 0);
             }
         }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
+        return input;
+    };
+
+    const epsilon = 1e-15;
+
+    // 递归计算二元交叉熵
+    const computeBCE = (pred, actual) => {
+        if (!Array.isArray(pred) && !Array.isArray(actual)) {
+            // 如果都是标量，直接计算交叉熵
+            const p = Math.max(epsilon, Math.min(1 - epsilon, pred));
+            const y = actual;
+            return -(y * Math.log(p) + (1 - y) * Math.log(1 - p));
+        }
+
+        if (Array.isArray(pred) && Array.isArray(actual)) {
+            // 如果都是数组，递归计算每个元素
+            if (pred.length !== actual.length) {
+                return 0;
+            }
+            
+            const losses = pred.map((p, i) => computeBCE(p, actual[i]));
+            
+            // 如果子元素是数字，计算平均值
+            if (losses.every(l => typeof l === 'number')) {
+                return losses.reduce((sum, l) => sum + l, 0) / losses.length;
+            }
+            
+            // 如果子元素是数组，保持结构
+            return losses;
+        }
+
+        return 0;
     };
 
     try {
-        const predicted = parseToArray(A);
-        const actual = parseToArray(B);
+        const predicted = parse(A);
+        const actual = parse(B);
         
-        if (predicted.length === 0 || actual.length === 0 || predicted.length !== actual.length) {
+        if (!predicted || !actual) {
             return "0";
         }
         
-        let loss = 0;
-        const len = predicted.length;
-        const epsilon = 1e-15;
+        const bce = computeBCE(predicted, actual);
         
-        for (let i = 0; i < len; i++) {
-            const p = Math.max(epsilon, Math.min(1 - epsilon, predicted[i]));
-            const y = actual[i];
-            loss -= y * Math.log(p) + (1 - y) * Math.log(1 - p);
-        }
+        // 确保返回数字
+        const result = typeof bce === 'number' ? bce : 
+            (Array.isArray(bce) ? bce.flat(Infinity).reduce((sum, val) => sum + val, 0) / bce.flat(Infinity).length : 0);
         
-        return (loss / len).toString();
+        return result.toString();
         
     } catch (error) {
         return "0";
     }
 }
+
 /**
- * Huber损失函数
+ * Huber损失函数 - 支持多维数组
  * @param {Object} param - 参数对象
  * @param {*} param.A - 预测值数组
  * @param {*} param.B - 真实值数组
@@ -1198,44 +1305,71 @@ BINARY_CROSS_ENTROPY_LOSS_block({ A, B }) {
  * @returns {string} 损失值
  */
 HUBER_LOSS_block({ A, B, C }) {
-    const parseToArray = (input) => {
+    const parse = (input) => {
         if (typeof input === 'string') {
             try {
-                return JSON.parse(input).map(num => +num || 0);
+                return JSON.parse(input);
             } catch (e) {
                 return input.trim().split(/\s+/).map(num => +num || 0);
             }
         }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
+        return input;
+    };
+
+    // 递归计算Huber损失
+    const computeHuber = (pred, actual, delta) => {
+        if (!Array.isArray(pred) && !Array.isArray(actual)) {
+            // 如果都是标量，直接计算Huber损失
+            const diff = Math.abs(pred - actual);
+            if (diff <= delta) {
+                return 0.5 * diff * diff;
+            } else {
+                return delta * diff - 0.5 * delta * delta;
+            }
+        }
+
+        if (Array.isArray(pred) && Array.isArray(actual)) {
+            // 如果都是数组，递归计算每个元素
+            if (pred.length !== actual.length) {
+                return 0;
+            }
+            
+            const losses = pred.map((p, i) => computeHuber(p, actual[i], delta));
+            
+            // 如果子元素是数字，计算平均值
+            if (losses.every(l => typeof l === 'number')) {
+                return losses.reduce((sum, l) => sum + l, 0) / losses.length;
+            }
+            
+            // 如果子元素是数组，保持结构
+            return losses;
+        }
+
+        return 0;
     };
 
     try {
-        const predicted = parseToArray(A);
-        const actual = parseToArray(B);
+        const predicted = parse(A);
+        const actual = parse(B);
         const delta = +C || 1.0;
         
-        if (predicted.length === 0 || actual.length === 0 || predicted.length !== actual.length) {
+        if (!predicted || !actual) {
             return "0";
         }
         
-        let sum = 0;
-        const len = predicted.length;
+        const huber = computeHuber(predicted, actual, delta);
         
-        for (let i = 0; i < len; i++) {
-            const diff = Math.abs(predicted[i] - actual[i]);
-            if (diff <= delta) {
-                sum += 0.5 * diff * diff;
-            } else {
-                sum += delta * diff - 0.5 * delta * delta;
-            }
-        }
+        // 确保返回数字
+        const result = typeof huber === 'number' ? huber : 
+            (Array.isArray(huber) ? huber.flat(Infinity).reduce((sum, val) => sum + val, 0) / huber.flat(Infinity).length : 0);
         
-        return (sum / len).toString();
+        return result.toString();
         
     } catch (error) {
         return "0";
     }
 }
+
 /**
  * Dropout层 - 训练模式
  * @param {Object} param - 参数对象
@@ -1677,243 +1811,290 @@ NORMALIZE_VECTOR_block({ A, B }) {
         return "[]";
     }
 }
+
 /**
- * 神经网络反向传播 - 计算梯度
+ * MSE损失梯度计算
  * @param {Object} param - 参数对象
- * @param {*} param.A - 上一层误差
- * @param {*} param.B - 当前层权重矩阵
- * @param {*} param.C - 当前层激活值
- * @returns {string} 梯度结果 (JSON格式)
+ * @param {*} param.A - 预测值数组
+ * @param {*} param.B - 真实值数组
+ * @returns {string} 梯度矩阵 (JSON格式)
  */
-BACKPROP_block({ A, B, C }) {
+MSE_GRADIENT_block({ A, B }) {
     const parseToArray = (input) => {
-        if (typeof input === 'string') {
-            try {
-                return JSON.parse(input).map(num => +num || 0);
-            } catch (e) {
-                return input.trim().split(/\s+/).map(num => +num || 0);
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    const flatten = (arr) => {
+        const result = [];
+        const stack = [arr];
+        while (stack.length) {
+            const current = stack.pop();
+            if (Array.isArray(current)) {
+                for (let i = current.length - 1; i >= 0; i--) {
+                    stack.push(current[i]);
+                }
+            } else {
+                result.push(current);
             }
         }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
+        return result;
+    };
+
+    const reshape = (arr, dims) => {
+        if (dims.length === 1) return arr.slice(0, dims[0]);
+        
+        const result = [];
+        const size = dims.slice(1).reduce((a, b) => a * b, 1);
+        
+        for (let i = 0; i < dims[0]; i++) {
+            result.push(reshape(arr.slice(i * size, (i + 1) * size), dims.slice(1)));
+        }
+        return result;
     };
 
     try {
-        const error = parseToArray(A);        // 上一层误差
-        const weights = parseToArray(B);      // 当前层权重
-        const activation = parseToArray(C);   // 当前层激活值
+        const predicted = parseToArray(A);
+        const actual = parseToArray(B);
         
-        if (error.length === 0 || weights.length === 0 || activation.length === 0) {
+        if (!Array.isArray(predicted) || !Array.isArray(actual)) {
             return "[]";
         }
         
-        // 确定矩阵维度
-        const outputSize = error.length;
-        const inputSize = activation.length;
+        // 获取维度信息
+        const getDims = (arr) => {
+            const dims = [];
+            let current = arr;
+            while (Array.isArray(current)) {
+                dims.push(current.length);
+                current = current[0];
+            }
+            return dims;
+        };
         
-        // 验证权重矩阵维度
-        if (weights.length !== inputSize * outputSize) {
+        const dimsPredicted = getDims(predicted);
+        const dimsActual = getDims(actual);
+        
+        // 检查维度是否匹配
+        if (dimsPredicted.length !== dimsActual.length || 
+            dimsPredicted.some((d, i) => d !== dimsActual[i])) {
             return "[]";
         }
         
-        // 将权重矩阵重构为2D数组 (inputSize × outputSize)
-        const weightMatrix = [];
-        for (let i = 0; i < inputSize; i++) {
-            weightMatrix[i] = weights.slice(i * outputSize, (i + 1) * outputSize);
+        // 扁平化数组
+        const flatPredicted = flatten(predicted);
+        const flatActual = flatten(actual);
+        const n = flatPredicted.length;
+        
+        // 计算梯度：d(MSE)/dy = 2/n * (y - y_true)
+        const gradients = new Array(n);
+        for (let i = 0; i < n; i++) {
+            gradients[i] = 2 * (flatPredicted[i] - flatActual[i]) / n;
         }
+        
+        // 重塑为原始维度
+        return JSON.stringify(reshape(gradients, dimsPredicted));
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+/**
+ * 交叉熵损失梯度计算
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 预测概率数组 (softmax输出)
+ * @param {*} param.B - 真实标签数组 (one-hot编码)
+ * @returns {string} 梯度矩阵 (JSON格式)
+ */
+CROSS_ENTROPY_GRADIENT_block({ A, B }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    const flatten = (arr) => {
+        const result = [];
+        const stack = [arr];
+        while (stack.length) {
+            const current = stack.pop();
+            if (Array.isArray(current)) {
+                for (let i = current.length - 1; i >= 0; i--) {
+                    stack.push(current[i]);
+                }
+            } else {
+                result.push(current);
+            }
+        }
+        return result;
+    };
+
+    const reshape = (arr, dims) => {
+        if (dims.length === 1) return arr.slice(0, dims[0]);
+        
+        const result = [];
+        const size = dims.slice(1).reduce((a, b) => a * b, 1);
+        
+        for (let i = 0; i < dims[0]; i++) {
+            result.push(reshape(arr.slice(i * size, (i + 1) * size), dims.slice(1)));
+        }
+        return result;
+    };
+
+    try {
+        const predicted = parseToArray(A);
+        const actual = parseToArray(B);
+        
+        if (!Array.isArray(predicted) || !Array.isArray(actual)) {
+            return "[]";
+        }
+        
+        // 获取维度信息
+        const getDims = (arr) => {
+            const dims = [];
+            let current = arr;
+            while (Array.isArray(current)) {
+                dims.push(current.length);
+                current = current[0];
+            }
+            return dims;
+        };
+        
+        const dimsPredicted = getDims(predicted);
+        const dimsActual = getDims(actual);
+        
+        // 检查维度是否匹配
+        if (dimsPredicted.length !== dimsActual.length || 
+            dimsPredicted.some((d, i) => d !== dimsActual[i])) {
+            return "[]";
+        }
+        
+        // 扁平化数组
+        const flatPredicted = flatten(predicted);
+        const flatActual = flatten(actual);
+        const n = flatPredicted.length;
+        
+        // 计算梯度：d(CrossEntropy)/dy = y - y_true
+        const gradients = new Array(n);
+        for (let i = 0; i < n; i++) {
+            gradients[i] = flatPredicted[i] - flatActual[i];
+        }
+        
+        // 重塑为原始维度
+        return JSON.stringify(reshape(gradients, dimsPredicted));
+        
+    } catch (error) {
+        return "[]";
+    }
+}
+/**
+ * Huber损失梯度计算
+ * @param {Object} param - 参数对象
+ * @param {*} param.A - 预测值数组
+ * @param {*} param.B - 真实值数组
+ * @param {*} param.C - delta参数 (默认1.0)
+ * @returns {string} 梯度矩阵 (JSON格式)
+ */
+HUBER_GRADIENT_block({ A, B, C }) {
+    const parseToArray = (input) => {
+        if (typeof input !== 'string') return input;
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            return input.trim().split(/\s+/).map(n => +n || 0);
+        }
+    };
+
+    const flatten = (arr) => {
+        const result = [];
+        const stack = [arr];
+        while (stack.length) {
+            const current = stack.pop();
+            if (Array.isArray(current)) {
+                for (let i = current.length - 1; i >= 0; i--) {
+                    stack.push(current[i]);
+                }
+            } else {
+                result.push(current);
+            }
+        }
+        return result;
+    };
+
+    const reshape = (arr, dims) => {
+        if (dims.length === 1) return arr.slice(0, dims[0]);
+        
+        const result = [];
+        const size = dims.slice(1).reduce((a, b) => a * b, 1);
+        
+        for (let i = 0; i < dims[0]; i++) {
+            result.push(reshape(arr.slice(i * size, (i + 1) * size), dims.slice(1)));
+        }
+        return result;
+    };
+
+    try {
+        const predicted = parseToArray(A);
+        const actual = parseToArray(B);
+        const delta = Math.max(0.1, +C || 1.0);
+        
+        if (!Array.isArray(predicted) || !Array.isArray(actual)) {
+            return "[]";
+        }
+        
+        // 获取维度信息
+        const getDims = (arr) => {
+            const dims = [];
+            let current = arr;
+            while (Array.isArray(current)) {
+                dims.push(current.length);
+                current = current[0];
+            }
+            return dims;
+        };
+        
+        const dimsPredicted = getDims(predicted);
+        const dimsActual = getDims(actual);
+        
+        // 检查维度是否匹配
+        if (dimsPredicted.length !== dimsActual.length || 
+            dimsPredicted.some((d, i) => d !== dimsActual[i])) {
+            return "[]";
+        }
+        
+        // 扁平化数组
+        const flatPredicted = flatten(predicted);
+        const flatActual = flatten(actual);
+        const n = flatPredicted.length;
         
         // 计算梯度
-        const gradient = new Array(inputSize);
-        
-        for (let i = 0; i < inputSize; i++) {
-            let sum = 0;
-            for (let j = 0; j < outputSize; j++) {
-                sum += error[j] * weightMatrix[i][j];
+        const gradients = new Array(n);
+        for (let i = 0; i < n; i++) {
+            const diff = flatPredicted[i] - flatActual[i];
+            if (Math.abs(diff) <= delta) {
+                gradients[i] = diff;
+            } else {
+                gradients[i] = delta * (diff > 0 ? 1 : -1);
             }
-            // 乘以激活函数的导数（这里假设是ReLU）
-            gradient[i] = sum * (activation[i] > 0 ? 1 : 0);
         }
         
-        return JSON.stringify(gradient);
+        // 重塑为原始维度
+        return JSON.stringify(reshape(gradients, dimsPredicted));
         
     } catch (error) {
         return "[]";
     }
 }
-/**
- * 神经网络反向传播 - 支持多种激活函数
- * @param {Object} param - 参数对象
- * @param {*} param.A - 上一层误差
- * @param {*} param.B - 当前层权重矩阵
- * @param {*} param.C - 当前层激活值
- * @param {*} param.D - 激活函数类型 (0=ReLU, 1=Sigmoid, 2=Tanh)
- * @returns {string} 梯度结果 (JSON格式)
- */
-BACKPROP_WITH_ACTIVATION_block({ A, B, C, D }) {
-    const parseToArray = (input) => {
-        if (typeof input === 'string') {
-            try {
-                return JSON.parse(input).map(num => +num || 0);
-            } catch (e) {
-                return input.trim().split(/\s+/).map(num => +num || 0);
-            }
-        }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
-    };
 
-    // 激活函数的导数
-    const activationDerivative = (x, type) => {
-        switch (type) {
-            case 0: // ReLU
-                return x > 0 ? 1 : 0;
-            case 1: // Sigmoid
-                const s = 1 / (1 + Math.exp(-x));
-                return s * (1 - s);
-            case 2: // Tanh
-                const t = Math.tanh(x);
-                return 1 - t * t;
-            default:
-                return 1;
-        }
-    };
 
-    try {
-        const error = parseToArray(A);
-        const weights = parseToArray(B);
-        const activation = parseToArray(C);
-        const activationType = Math.max(0, Math.min(2, +D || 0));
-        
-        if (error.length === 0 || weights.length === 0 || activation.length === 0) {
-            return "[]";
-        }
-        
-        const outputSize = error.length;
-        const inputSize = activation.length;
-        
-        if (weights.length !== inputSize * outputSize) {
-            return "[]";
-        }
-        
-        // 重构权重矩阵
-        const weightMatrix = [];
-        for (let i = 0; i < inputSize; i++) {
-            weightMatrix[i] = weights.slice(i * outputSize, (i + 1) * outputSize);
-        }
-        
-        // 计算梯度
-        const gradient = new Array(inputSize);
-        
-        for (let i = 0; i < inputSize; i++) {
-            let sum = 0;
-            for (let j = 0; j < outputSize; j++) {
-                sum += error[j] * weightMatrix[i][j];
-            }
-            gradient[i] = sum * activationDerivative(activation[i], activationType);
-        }
-        
-        return JSON.stringify(gradient);
-        
-    } catch (error) {
-        return "[]";
-    }
-}
-/**
- * 神经网络权重更新
- * @param {Object} param - 参数对象
- * @param {*} param.A - 当前权重矩阵
- * @param {*} param.B - 权重梯度
- * @param {*} param.C - 学习率
- * @param {*} param.D - 输入层激活值
- * @returns {string} 更新后的权重矩阵 (JSON格式)
- */
-WEIGHT_UPDATE_block({ A, B, C, D }) {
-    const parseToArray = (input) => {
-        if (typeof input === 'string') {
-            try {
-                return JSON.parse(input).map(num => +num || 0);
-            } catch (e) {
-                return input.trim().split(/\s+/).map(num => +num || 0);
-            }
-        }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
-    };
 
-    try {
-        const weights = parseToArray(A);       // 当前权重
-        const gradients = parseToArray(B);     // 权重梯度
-        const learningRate = +C || 0.01;       // 学习率
-        const inputActivation = parseToArray(D); // 输入层激活值
-        
-        if (weights.length === 0 || gradients.length === 0 || inputActivation.length === 0) {
-            return "[]";
-        }
-        
-        // 确定维度
-        const inputSize = inputActivation.length;
-        const outputSize = weights.length / inputSize;
-        
-        if (weights.length !== inputSize * outputSize || gradients.length !== weights.length) {
-            return "[]";
-        }
-        
-        // 更新权重
-        const updatedWeights = new Array(weights.length);
-        
-        for (let i = 0; i < inputSize; i++) {
-            for (let j = 0; j < outputSize; j++) {
-                const index = i * outputSize + j;
-                // w = w - learning_rate * gradient * input
-                updatedWeights[index] = weights[index] - learningRate * gradients[index] * inputActivation[i];
-            }
-        }
-        
-        return JSON.stringify(updatedWeights);
-        
-    } catch (error) {
-        return "[]";
-    }
-}
-/**
- * 神经网络偏置更新
- * @param {Object} param - 参数对象
- * @param {*} param.A - 当前偏置向量
- * @param {*} param.B - 偏置梯度
- * @param {*} param.C - 学习率
- * @returns {string} 更新后的偏置向量 (JSON格式)
- */
-BIAS_UPDATE_block({ A, B, C }) {
-    const parseToArray = (input) => {
-        if (typeof input === 'string') {
-            try {
-                return JSON.parse(input).map(num => +num || 0);
-            } catch (e) {
-                return input.trim().split(/\s+/).map(num => +num || 0);
-            }
-        }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
-    };
-
-    try {
-        const biases = parseToArray(A);        // 当前偏置
-        const gradients = parseToArray(B);      // 偏置梯度
-        const learningRate = +C || 0.01;       // 学习率
-        
-        if (biases.length === 0 || gradients.length === 0 || biases.length !== gradients.length) {
-            return "[]";
-        }
-        
-        // 更新偏置
-        const updatedBiases = new Array(biases.length);
-        for (let i = 0; i < biases.length; i++) {
-            // b = b - learning_rate * gradient
-            updatedBiases[i] = biases[i] - learningRate * gradients[i];
-        }
-        
-        return JSON.stringify(updatedBiases);
-        
-    } catch (error) {
-        return "[]";
-    }
-}
 /**
  * 独热编码
  * @param {Object} param - 参数对象
@@ -2347,39 +2528,60 @@ MATRIX_ROTATE_block({ A, B }) {
     }
 }
 /**
- * 神经网络偏置梯度计算
+ * 神经网络偏置梯度计算 - 支持多维数组
  * @param {Object} param - 参数对象
  * @param {*} param.A - 上一层误差
  * @returns {string} 偏置梯度 (JSON格式)
  */
 BIAS_GRADIENT_block({ A }) {
-    const parseToArray = (input) => {
+    const parse = (input) => {
         if (typeof input === 'string') {
             try {
-                return JSON.parse(input).map(num => +num || 0);
+                return JSON.parse(input);
             } catch (e) {
                 return input.trim().split(/\s+/).map(num => +num || 0);
             }
         }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
+        return input;
+    };
+
+    // 递归计算梯度
+    const computeGradient = (error) => {
+        if (!Array.isArray(error)) {
+            // 如果是标量，直接返回
+            return error;
+        }
+
+        // 检查是否需要沿特定维度求和
+        if (error.every(item => Array.isArray(item))) {
+            // 如果所有元素都是数组，递归计算每个子数组的梯度
+            return error.map(subArray => computeGradient(subArray));
+        } else {
+            // 如果是数字数组，计算它们的和
+            return error.reduce((sum, val) => sum + val, 0);
+        }
     };
 
     try {
-        const error = parseToArray(A);  // 上一层误差
+        const error = parse(A);  // 上一层误差
         
-        if (error.length === 0) {
+        if (!error) {
             return "[]";
         }
         
-        // 偏置梯度就是上一层误差的和
-        const gradient = error.reduce((sum, val) => sum + val, 0);
+        // 计算梯度
+        const gradient = computeGradient(error);
         
-        return JSON.stringify([gradient]);
+        // 确保结果至少是一个数组
+        const result = Array.isArray(gradient) ? gradient : [gradient];
+        
+        return JSON.stringify(result);
         
     } catch (error) {
         return "[]";
     }
-} //这个是king制作
+}
+ //这个是king制作 经过张量优化
 /**
  * 多维矩阵生成器
  * @param {Object} param - 参数对象
