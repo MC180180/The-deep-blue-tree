@@ -242,21 +242,11 @@ Scratch.translate.setup({
           },
           '---',
           {
-            opcode: "MATRIX_ADD_block", // EEEEEEEEEEEE运算积木
+            opcode: "MATRIX_RESHAPE_block", // EEEEEEEEEEEE运算积木
             blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "矩阵加法[A]+[B]", // 积木显示文本
-          },
-          {
-            opcode: "MATRIX_MUL_block", // EEEEEEEEEEEE运算积木
-            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "矩阵乘法[A]*[B]", // 积木显示文本
-          },
-          {
-            opcode: "MATRIX_ROTATE_block", // EEEEEEEEEEEE运算积木
-            blockType: Scratch.BlockType.REPORTER, // 返回值类型积木
-            text: "矩阵旋转[A]+[B]", // 积木显示文本
+            text: "矩阵变换[A] [B]", // 积木显示文本
             arguments: {
-              B: { type: Scratch.ArgumentType.NUMBER, defaultValue: "旋转角度 (90的倍数)" }, //  定义A参数，类型为数字，默认值为空
+              B: { type: Scratch.ArgumentType.STRING, defaultValue: "目标形状 [行,列]" }, //  定义A参数，类型为数字，默认值为空
             },
           },
           '---',
@@ -2520,112 +2510,15 @@ ONE_HOT_DECODE_block({ A, B }) {
     }
 }
 
-/**
- * 矩阵加法
- * @param {Object} param - 参数对象
- * @param {*} param.A - 第一个矩阵
- * @param {*} param.B - 第二个矩阵
- * @returns {string} 结果矩阵 (JSON格式)
- */
-MATRIX_ADD_block({ A, B }) {
-    const parseToArray = (input) => {
-        if (typeof input === 'string') {
-            try {
-                return JSON.parse(input);
-            } catch (e) {
-                return input.trim().split(/\s+/).map(num => +num || 0);
-            }
-        }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
-    };
 
-    try {
-        const matrixA = parseToArray(A);
-        const matrixB = parseToArray(B);
-        
-        if (matrixA.length === 0 || matrixB.length === 0) {
-            return "[]";
-        }
-        
-        // 检查矩阵维度是否匹配
-        const lenA = matrixA.length;
-        const lenB = matrixB.length;
-        if (lenA !== lenB) {
-            return "[]";
-        }
-        
-        // 执行矩阵加法
-        const result = matrixA.map((val, i) => val + matrixB[i]);
-        
-        return JSON.stringify(result);
-        
-    } catch (error) {
-        return "[]";
-    }
-}
 /**
- * 矩阵乘法
- * @param {Object} param - 参数对象
- * @param {*} param.A - 第一个矩阵 (m×n)
- * @param {*} param.B - 第二个矩阵 (n×p)
- * @returns {string} 结果矩阵 (JSON格式)
- */
-MATRIX_MUL_block({ A, B }) {
-    const parseToArray = (input) => {
-        if (typeof input === 'string') {
-            try {
-                return JSON.parse(input);
-            } catch (e) {
-                return input.trim().split(/\s+/).map(num => +num || 0);
-            }
-        }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
-    };
-
-    try {
-        const matrixA = parseToArray(A);
-        const matrixB = parseToArray(B);
-        
-        if (matrixA.length === 0 || matrixB.length === 0) {
-            return "[]";
-        }
-        
-        // 确定矩阵维度
-        const m = Math.sqrt(matrixA.length);
-        const n = m;
-        const p = Math.sqrt(matrixB.length);
-        
-        if (n !== p || !Number.isInteger(m) || !Number.isInteger(p)) {
-            return "[]";
-        }
-        
-        // 执行矩阵乘法
-        const result = new Array(m * p);
-        
-        for (let i = 0; i < m; i++) {
-            for (let j = 0; j < p; j++) {
-                let sum = 0;
-                for (let k = 0; k < n; k++) {
-                    sum += matrixA[i * n + k] * matrixB[k * p + j];
-                }
-                result[i * p + j] = sum;
-            }
-        }
-        
-        return JSON.stringify(result);
-        
-    } catch (error) {
-        return "[]";
-    }
-}
-/**
- * 矩阵旋转
+ * 矩阵形状转换器
  * @param {Object} param - 参数对象
  * @param {*} param.A - 输入矩阵
- * @param {*} param.B - 旋转角度 (90的倍数)
- * @returns {string} 旋转后的矩阵 (JSON格式)
+ * @param {*} param.B - 目标形状 [行,列]
+ * @returns {string} 转换后的矩阵 (JSON格式)
  */
-MATRIX_ROTATE_block({ A, B }) {
+MATRIX_RESHAPE_block({ A, B }) {
     const parseToArray = (input) => {
         if (typeof input === 'string') {
             try {
@@ -2634,61 +2527,77 @@ MATRIX_ROTATE_block({ A, B }) {
                 return input.trim().split(/\s+/).map(num => +num || 0);
             }
         }
-        return Array.isArray(input) ? input.flat().map(num => +num || 0) : [+input || 0];
+        // 如果是数组，直接返回
+        if (Array.isArray(input)) {
+            return input;
+        }
+        // 如果是单个数字，转换为数组
+        return [+input || 0];
     };
 
     try {
         const matrix = parseToArray(A);
-        const angle = Math.floor((+B || 0) / 90) % 4; // 转换为0-3的整数
+        const targetShape = parseToArray(B);
         
-        if (matrix.length === 0) {
+        // 验证输入
+        if (!Array.isArray(matrix)) {
             return "[]";
         }
         
-        const n = Math.sqrt(matrix.length);
-        if (!Number.isInteger(n)) {
+        // 扁平化输入矩阵
+        const flattenMatrix = (arr) => {
+            const result = [];
+            const stack = [arr];
+            while (stack.length) {
+                const current = stack.pop();
+                if (Array.isArray(current)) {
+                    for (let i = current.length - 1; i >= 0; i--) {
+                        stack.push(current[i]);
+                    }
+                } else {
+                    result.push(current);
+                }
+            }
+            return result;
+        };
+        
+        const flatMatrix = flattenMatrix(matrix);
+        
+        // 验证目标形状
+        if (!Array.isArray(targetShape) || targetShape.length !== 2) {
             return "[]";
         }
         
-        // 创建临时矩阵
-        let temp = new Array(matrix.length);
+        const [targetRows, targetCols] = targetShape;
         
-        // 根据旋转角度处理
-        switch (angle) {
-            case 0: // 0度，不旋转
-                return JSON.stringify(matrix);
-                
-            case 1: // 90度顺时针
-                for (let i = 0; i < n; i++) {
-                    for (let j = 0; j < n; j++) {
-                        temp[j * n + (n - 1 - i)] = matrix[i * n + j];
-                    }
-                }
-                break;
-                
-            case 2: // 180度
-                for (let i = 0; i < n; i++) {
-                    for (let j = 0; j < n; j++) {
-                        temp[(n - 1 - i) * n + (n - 1 - j)] = matrix[i * n + j];
-                    }
-                }
-                break;
-                
-            case 3: // 270度顺时针（或90度逆时针）
-                for (let i = 0; i < n; i++) {
-                    for (let j = 0; j < n; j++) {
-                        temp[(n - 1 - j) * n + i] = matrix[i * n + j];
-                    }
-                }
-                break;
+        if (targetRows <= 0 || targetCols <= 0) {
+            return "[]";
         }
         
-        return JSON.stringify(temp);
+        // 检查元素数量是否匹配
+        const totalElements = targetRows * targetCols;
+        if (flatMatrix.length !== totalElements) {
+            return "[]";
+        }
+        
+        // 重塑矩阵
+        const result = [];
+        for (let i = 0; i < targetRows; i++) {
+            const row = [];
+            for (let j = 0; j < targetCols; j++) {
+                row.push(flatMatrix[i * targetCols + j]);
+            }
+            result.push(row);
+        }
+        
+        return JSON.stringify(result);
         
     } catch (error) {
         return "[]";
     }
 }
+
+
 /**
  * 神经网络偏置梯度计算 - 支持多维数组
  * @param {Object} param - 参数对象
