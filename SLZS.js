@@ -333,24 +333,33 @@ Scratch.translate.setup({
             },
           },
           '---',
-          {
+           {
             opcode: "UPDATE_WEIGHTS_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "用[C]优化器更新权重[A] 梯度[B] 学习率[D] [E]",
-            color1: "#225bb1", 
+            text: "用[C]优化器更新权重[A] 梯度[B] 学习率[D] 配置[E]",
+            color1: "#225bb1",
             arguments: {
-                A: { type: Scratch.ArgumentType.STRING, defaultValue: "[1,2,3]" },
-                B: { type: Scratch.ArgumentType.STRING, defaultValue: "[0.1,0.2,0.3]" },
+                A: { 
+                    type: Scratch.ArgumentType.STRING, 
+                    defaultValue: "[1,2,3]" 
+                },
+                B: { 
+                    type: Scratch.ArgumentType.STRING, 
+                    defaultValue: "[0.1,0.2,0.3]" 
+                },
                 C: {
                     type: Scratch.ArgumentType.STRING,
-                    menu: "optimizer_type"
+                    menu: "optimizer_type"  // ← 保留菜单：SGD / Adam
                 },
-                D: { type: Scratch.ArgumentType.NUMBER, defaultValue: "0.01" },
+                D: { 
+                    type: Scratch.ArgumentType.NUMBER, 
+                    defaultValue: 0.01 
+                },
                 E: {
                     type: Scratch.ArgumentType.STRING,
-                    menu: "adam_params"
+                    defaultValue: '{"beta1": 0.9, "beta2": 0.999}'  // ← 关键：去掉 menu，加默认 JSON
+                    },
                 },
-              }
             },
             {
             opcode: "UPDATE_BIAS_block",
@@ -3300,8 +3309,8 @@ STRUCTURED_PRUNING_block({ A, B, C, D }) {
  * @param {*} param.B - 对应梯度张量（来自 MSE/CE/Huber）
  * @param {*} param.C - 优化器类型 ("SGD" 或 "Adam")
  * @param {*} param.D - 学习率，默认 0.01
- * @param {*} param.E - 可选参数（Adam用 β₁, β₂；SGD用动量）
- * @returns {string} 更新后的权重张量（JSON格式）
+ * @param {*} param.E - 可选参数（Adam用 β₁, β₂, state；SGD用 momentum）
+ * @returns {string} 更新后的权重张量（JSON格式） + 新状态 { weights: "...", state: { m: [...], v: [...], t: 2 } }
  */
 UPDATE_WEIGHTS_block({ A, B, C, D, E }) {
     const parseToArray = (input) => {
@@ -3365,7 +3374,7 @@ UPDATE_WEIGHTS_block({ A, B, C, D, E }) {
         // 维度检查
         if (dimsWeights.length !== dimsGradients.length ||
             dimsWeights.some((d, i) => d !== dimsGradients[i])) {
-            return "[]"; // 不匹配则返回空数组
+            return JSON.stringify({ weights: "[]", state: null });
         }
 
         // 扁平化处理
@@ -3373,48 +3382,70 @@ UPDATE_WEIGHTS_block({ A, B, C, D, E }) {
         const flatGradients = flatten(gradients);
         const n = flatWeights.length;
 
-        // 初始化状态变量（仅在Adam中需要）
-        let momentum = 0;
-        let m = 0, v = 0;
-        let beta1 = 0.9, beta2 = 0.999;
+        // 初始化超参数
+        let beta1 = 0.9, beta2 = 0.999, momentum = 0;
+        let m_arr = new Array(n).fill(0);
+        let v_arr = new Array(n).fill(0);
+        let t = 1;
 
         if (optimizer === "ADAM") {
-            beta1 = Math.max(0.01, parseFloat(E?.beta1) || beta1);
-            beta2 = Math.max(0.01, parseFloat(E?.beta2) || beta2);
+            beta1 = Math.max(0.01, Math.min(0.999, parseFloat(E?.beta1) || 0.9));
+            beta2 = Math.max(0.01, Math.min(0.999, parseFloat(E?.beta2) || 0.999));
+
+            // 读取上一步状态
+            if (E?.state) {
+                const prevState = E.state;
+                if (Array.isArray(prevState.m) && prevState.m.length === n) m_arr = [...prevState.m];
+                if (Array.isArray(prevState.v) && prevState.v.length === n) v_arr = [...prevState.v];
+                t = (prevState.t || 0) + 1;
+            }
         } else if (optimizer === "SGD") {
-            momentum = parseFloat(E?.momentum) || 0;
+            momentum = Math.max(0, Math.min(1, parseFloat(E?.momentum) || 0));
         }
 
         // 更新权重
         const updatedWeights = new Array(n);
+        const new_m = new Array(n);
+        const new_v = new Array(n);
+
         for (let i = 0; i < n; i++) {
             const grad = flatGradients[i];
 
             if (optimizer === "SGD") {
-                // SGD: w_new = w - lr * grad
                 updatedWeights[i] = flatWeights[i] - lr * grad;
             } else if (optimizer === "ADAM") {
-                // Adam: m_t = β1 * m_{t-1} + (1−β1) * grad
-                m = beta1 * m + (1 - beta1) * grad;
-                // v_t = β2 * v_{t-1} + (1−β2) * grad²
-                v = beta2 * v + (1 - beta2) * grad * grad;
-                // bias-corrected estimates
-                const m_hat = m / (1 - Math.pow(beta1, 1));
-                const v_hat = v / (1 - Math.pow(beta2, 1));
-                // w_new = w - lr * m_hat / (√v_hat + ε)
+                // 更新一阶和二阶动量
+                const new_m_i = beta1 * m_arr[i] + (1 - beta1) * grad;
+                const new_v_i = beta2 * v_arr[i] + (1 - beta2) * grad * grad;
+
+                new_m[i] = new_m_i;
+                new_v[i] = new_v_i;
+
+                // 偏差校正
+                const m_hat = new_m_i / (1 - Math.pow(beta1, t));
+                const v_hat = new_v_i / (1 - Math.pow(beta2, t));
+
                 updatedWeights[i] = flatWeights[i] - lr * m_hat / (Math.sqrt(v_hat) + 1e-8);
             } else {
-                // 默认使用SGD
                 updatedWeights[i] = flatWeights[i] - lr * grad;
             }
         }
 
         // 重塑回原始形状
-        return JSON.stringify(reshape(updatedWeights, dimsWeights));
+        const finalWeights = reshape(updatedWeights, dimsWeights);
+        const newState = optimizer === "ADAM"
+            ? { m: new_m, v: new_v, t: t }
+            : null;
+
+        // 返回 JSON：包含权重和新状态（便于下一次调用）
+        return JSON.stringify({
+            weights: finalWeights,
+            state: newState
+        });
 
     } catch (error) {
         console.error("UPDATE_WEIGHTS_block error:", error.message);
-        return "[]";
+        return JSON.stringify({ weights: "[]", state: null });
     }
 }//LoveAsuka制作
 /**
