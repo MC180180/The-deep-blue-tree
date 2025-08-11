@@ -20,7 +20,7 @@ Scratch.translate.setup({
 /* 国际化代码结束 */
 
 
-//npm install @tensorflow/tfjs @tensorflow/tfjs-node-gpu
+
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Extension Name must run unsandboxed');
