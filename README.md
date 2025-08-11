@@ -148,7 +148,7 @@
 
 如有问题或建议，请联系作者：
 - ELLRA - 蓝电
-- LoveAuska
+- -LoveAuska-
 
 ## 更新日志
 
