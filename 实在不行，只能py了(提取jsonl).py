@@ -94,4 +94,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = JSONLTextExtractor(root)
     root.mainloop()
-＃ Asuka天下第一
+＃Asuka天下第一
