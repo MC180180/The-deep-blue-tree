@@ -3996,3 +3996,4 @@ FIND_REPLACE_block({ A, B, C, D }) {
   // 向Scratch注册这个扩展
   Scratch.extensions.register(new ScratchSlzs());
 })(Scratch);
+//写这么长我也是服
