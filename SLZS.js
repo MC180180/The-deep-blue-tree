@@ -4,20 +4,6 @@
 // 作者: ELLRA - 蓝电 - MC180180 - BEJ180180  |  LoveAuska
 // 许可证: MIT
 
-/* 自动生成的国际化代码 */
-Scratch.translate.setup({
-  "de":{"_Math":"Mathe"}, // 德语: 数学
-  "fi":{"_Math":"Matematiikka", /* 芬兰语翻译 */},
-  "it":{"_Math":"Matematica"}, // 意大利语: 数学
-  "ja":{"_Math":"数学", /* 日语翻译 */},
-  "ko":{"_Math":"수학", /* 韩语翻译 */},
-  "nb":{"_Math":"Matte"}, // 挪威语: 数学
-  "nl":{"_Math":"Wiskunde"}, // 荷兰语: 数学
-  "ru":{"_Math":"Математика", /* 俄语翻译 */},
-  "uk":{"_Math":"Математика"}, // 乌克兰语: 数学
-  "zh-cn":{"_Math":"数学", /* 中文翻译 */}
-});
-/* 国际化代码结束 */
 
 
 //npm install @tensorflow/tfjs @tensorflow/tfjs-node-gpu
