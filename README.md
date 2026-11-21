@@ -149,6 +149,33 @@
 - ELLRA - 蓝电
 - -LoveAuska-
 
+## 优化版构建（v1.1.0）
+
+本仓库新增 npm 构建链，输出可直接给 TurboWarp 加载的单文件扩展：
+
+- 产物：`dist/SLZS.optimized.js`（根目录同时生成 `SLZS.optimized.js`）
+- 构建：`npm install && npm run build`
+- 测试：`npm test`
+- 构建产物默认自动最小化：esbuild 开启 `--minify`，并关闭 legal comments，保留 UTF-8 中文字符串以避免转义膨胀。
+- 本工作副本的 `origin` 已指向 `https://github.com/YangShiDanny/The-deep-blue-tree.git`，可直接由你本地 push。
+
+加速策略：
+
+- 默认阈值 4096 个元素。小矩阵走 JS，避免 GPU 启动开销；超过阈值的输入自动切到增强后端。
+- 后端优先级：`WebGPU → WASM → WebGL2 → JS 分块`，任何后端失败都会自动回退。
+- `WASM` 是手工编写的 f64 矩阵/逐元素内核，由 clang 编译后内嵌进 bundle，无需额外文件。
+- `WebGL2` 使用 RGBA32F 纹理 + fragment shader；`WebGPU` 使用 compute shader。
+- 新增积木：`增强计算状态`、`设置增强阈值[N]`、`强制后端[B]`，方便观察和切换后端。
+
+本次同时修复的计算问题：
+
+- 多个积木缺少参数声明，导致矩阵乘法、激活、损失、Dropout 等输入恒为 `undefined`。
+- 矩阵乘法/前向传播改为统一解析与加速内核；张量乘法支持 batch 广播。
+- Adam/SGD 的配置和状态现在从 JSON 字符串正确恢复，动量可以跨调用累积。
+- 修复张量转置索引、Alpha Dropout 参数符号、标签平滑概率和、独热解码/多标签编码形状、Huber 梯度 delta、余弦相似度零向量、矩阵形状取整等问题。
+
+> 注意：修改积木参数定义会影响已保存项目中对应积木的兼容性；旧项目需要重新拖出相关积木。
+
 ## 更新日志
 
 ### v1.0.0

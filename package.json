@@ -1,0 +1,16 @@
+{
+  "name": "the-deep-blue-tree-optimized",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "TurboWarp 深蓝之树扩展：WASM/WebGL2/WebGPU 加速与计算错误修复",
+  "scripts": {
+    "patch": "node scripts/patch-legacy.mjs",
+    "build:wasm": "clang --target=wasm32 -O3 -nostdlib -Wl,--no-entry -Wl,--export-memory -Wl,--global-base=25165824 -Wl,--export=matmul_f64 -Wl,--export=elementwise_f64 -Wl,--export=dot_f64 -Wl,--initial-memory=33554432 -Wl,--max-memory=268435456 -o src/wasm/matmul.wasm src/wasm/matmul.c && node scripts/embed-wasm.mjs",
+    "build": "npm run patch && npm run build:wasm && esbuild src/index.js --bundle --format=iife --target=es2020 --minify --legal-comments=none --charset=utf8 --outfile=dist/SLZS.optimized.js && node scripts/finalize.mjs",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
